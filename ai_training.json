@@ -1,0 +1,28 @@
+{
+    "keywords": {
+        "apply": "In unserem FAQ haben wir genau erklärt, wie man sich bewirbt. Den Post dazu findest du hier:\n➡️ [Wie kann ich Moderator werden?](https://discord.com/channels/1449811998136336558/1452329622128820334)",
+        "bewerben": "In unserem FAQ haben wir genau erklärt, wie man sich bewirbt. Den Post dazu findest du hier:\n➡️ [Wie kann ich Moderator werden?](https://discord.com/channels/1449811998136336558/1452329622128820334)",
+        "bewerbung": "In unserem FAQ haben wir genau erklärt, wie man sich bewirbt. Den Post dazu findest du hier:\n➡️ [Wie kann ich Moderator werden?](https://discord.com/channels/1449811998136336558/1452329622128820334)",
+        "moderator": "In unserem FAQ haben wir genau erklärt, wie man sich bewirbt. Den Post dazu findest du hier:\n➡️ [Wie kann ich Moderator werden?](https://discord.com/channels/1449811998136336558/1452329622128820334)",
+        "teammitglied": "In unserem FAQ haben wir genau erklärt, wie man sich bewirbt. Den Post dazu findest du hier:\n➡️ [Wie kann ich Moderator werden?](https://discord.com/channels/1449811998136336558/1452329622128820334)",
+        "admin": "In unserem FAQ haben wir genau erklärt, wie man sich bewirbt. Den Post dazu findest du hier:\n➡️ [Wie kann ich Moderator werden?](https://discord.com/channels/1449811998136336558/1452329622128820334)",
+        "self roles": "Um selber bestimmen zu dürfen, wann du gepingt werden haben wir unsere Self Roles. Dort kannst du jederzeit Rollen an- und Abwählen. Gehe dazu einfach in folgenden Kanal:\n➡️ [Self Roles](https://discord.com/channels/1449811998136336558/1449811999029723344)",
+        "ping": "Um selber bestimmen zu dürfen, wann du gepingt werden haben wir unsere Self Roles. Dort kannst du jederzeit Rollen an- und Abwählen. Gehe dazu einfach in folgenden Kanal:\n➡️ [Self Roles](https://discord.com/channels/1449811998136336558/1449811999029723344)",
+        "benachrichtigungen": "Um selber bestimmen zu dürfen, wann du gepingt werden haben wir unsere Self Roles. Dort kannst du jederzeit Rollen an- und Abwählen. Gehe dazu einfach in folgenden Kanal:\n➡️ [Self Roles](https://discord.com/channels/1449811998136336558/1449811999029723344)"
+    },
+    "pending_training": {
+        "train_1_1767715883": {
+            "reason": "Wie kann ich meine Pings selber anwählen, also dass ich Pings bei neuen Videos, Stream, etc. bekomme?",
+            "ticket_id": 1,
+            "channel_id": 1458130838502772978
+        }
+    },
+    "servers": {
+        "1449811998136336558": {
+            "keywords": {
+                "bewerbungen geschlossen": "Hallo,\n> es ist schön zu wissen, dass du sich in unserem Team bewerben möchtest. Jedoch wie von dir erwähnt sind die Bewerbungen geschlossen. Ich bitte um Verständnis und möchte dich bitten keine weiteren Tickets zu diesem Anliegen zu öffnen!\n**Mit freundlichen Grüßen**\nJoshiNr KI-Support"
+            },
+            "pending_training": {}
+        }
+    }
+}
