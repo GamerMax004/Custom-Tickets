@@ -18,7 +18,6 @@ def load_config():
         with open(CONFIG_FILE, 'r', encoding='utf-8') as f:
             return json.load(f)
     return {
-        "bot_token": os.environ.get("BOT_TOKEN", "DEIN_BOT_TOKEN_HIER"),
         "servers": {}
     }
 
@@ -1453,11 +1452,11 @@ async def command_error(interaction: discord.Interaction, error: app_commands.Ap
 # --- Bot Start ---
 
 if __name__ == "__main__":
-    bot_token = os.environ.get("SESSION_SECRET")
+    bot_token = os.environ.get("DISCORD_BOT_TOKEN")
 
     if not bot_token or bot_token == "DEIN_BOT_TOKEN_HIER":
-        print("❌ FEHLER: Bitte setze die Umgebungsvariable BOT_TOKEN oder trage den Token in die ticket_config.json ein!")
-        print("Für Render: Setze BOT_TOKEN als Environment Variable")
+        print("❌ FEHLER: Bitte überprüfe die Umgebungsvariable DISCORD_BOT_TOKEN!")
+        print("Für Render: Setze DISCORD_BOT_TOKEN als Environment Variable")
         print("═" * 50)
         exit(1)
 
