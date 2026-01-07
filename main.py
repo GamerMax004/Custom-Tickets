@@ -6,6 +6,21 @@ import os
 import json
 from datetime import datetime
 from typing import Optional, Dict, List
+from aiohttp import web
+
+# --- Health Check Server ---
+async def handle_health(request):
+    return web.Response(text="Custom Tickets läuft erfolgreich!", content_type="text/plain")
+
+async def start_health_server():
+    app = web.Application()
+    app.router.add_get("/", handle_health)
+    runner = web.AppRunner(app)
+    await runner.setup()
+    port = int(os.environ.get("PORT", 5000))
+    site = web.TCPSite(runner, "0.0.0.0", port)
+    await site.start()
+    print(f"🌐 Health Check Server läuft auf Port {port}")
 
 # --- Konfigurationsdatei ---
 CONFIG_FILE = "ticket_config.json"
@@ -1462,10 +1477,15 @@ if __name__ == "__main__":
 
     try:
         # Port für Render (Web-Service benötigt einen Port)
-        port = int(os.environ.get("PORT", 8080))
+        port = int(os.environ.get("PORT", 5000))
         print(f"🌐 Port: {port} (für Render Web Service)")
 
-        bot.run(bot_token)
+        async def run_bot():
+            await start_health_server()
+            async with bot:
+                await bot.start(bot_token)
+
+        asyncio.run(run_bot())
     except discord.errors.LoginFailure:
         print("❌ FEHLER: Ungültiger Bot-Token!")
     except Exception as e:
