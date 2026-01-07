@@ -1,0 +1,98 @@
+{
+    "log_channel_id": 1458124219794587803,
+    "staff_role_id": 1458124567104196670,
+    "transcript_path": "transcripts",
+    "embed_colors": {
+        "default": 5793266,
+        "success": 5763719,
+        "error": 15548997,
+        "warning": 16705372,
+        "info": 5829362
+    },
+    "panels": {
+        "servermanagment": {
+            "label": "Servermanagment",
+            "emoji": "👥",
+            "category_id": 1449811999499485368,
+            "staff_role_id": 1449811998475944066,
+            "enabled": true
+        },
+        "serverleitung": {
+            "label": "Serverleitung",
+            "emoji": "👤",
+            "category_id": 1449811999725715546,
+            "staff_role_id": 1449811998475944068,
+            "enabled": true
+        }
+    },
+    "ai_training_channel_id": 1458124121320722575,
+    "multipanels": {
+        "kontaktbüro": {
+            "panels": [
+                "servermanagment",
+                "serverleitung"
+            ],
+            "created_by": 1211683189186105434,
+            "created_at": "2026-01-06T15:51:04.993475"
+        }
+    },
+    "servers": {
+        "1417136037066702899": {
+            "log_channel_id": 0,
+            "staff_role_id": 0,
+            "ai_training_channel_id": 0,
+            "transcript_path": "transcripts/1417136037066702899",
+            "embed_colors": {
+                "default": 5793266,
+                "success": 5763719,
+                "error": 15548997,
+                "warning": 16705372,
+                "info": 5793266
+            },
+            "panels": {},
+            "multipanels": {},
+            "ticket_counter": 0
+        },
+        "1449811998136336558": {
+            "log_channel_id": 1458124219794587803,
+            "staff_role_id": 1458124567104196670,
+            "ai_training_channel_id": 1458124121320722575,
+            "transcript_path": "transcripts/1449811998136336558",
+            "embed_colors": {
+                "default": 5793266,
+                "success": 5763719,
+                "error": 15548997,
+                "warning": 16705372,
+                "info": 5793266
+            },
+            "panels": {
+                "servermanagment": {
+                    "label": "Servermanagment",
+                    "emoji": "👥",
+                    "category_id": 1449811999499485368,
+                    "staff_role_id": 1449811998475944066,
+                    "enabled": true,
+                    "description": "> Sie haben allgemeine Fragen, Probleme bei der Bewerbung oder ähnliche Anliegen? Hier sind Sie richtig! Ein Moderatoren unseres Servers wird sich so schnell wie möglich um Sie kümmern."
+                }
+            },
+            "multipanels": {},
+            "ticket_counter": 3
+        },
+        "1451317018601984154": {
+            "log_channel_id": 0,
+            "staff_role_id": 0,
+            "ai_training_channel_id": 0,
+            "transcript_path": "transcripts/1451317018601984154",
+            "embed_colors": {
+                "default": 5793266,
+                "success": 5763719,
+                "error": 15548997,
+                "warning": 16705372,
+                "info": 5793266
+            },
+            "panels": {},
+            "multipanels": {},
+            "ticket_counter": 0
+        }
+    }
+}
