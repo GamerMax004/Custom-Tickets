@@ -2,7 +2,21 @@
     "servers": {
         "1449811998136336558": {
             "users": {
-                "1211683189186105434": []
+                "1211683189186105434": [],
+                "1059367541035778130": [
+                    "ticket_setup",
+                    "panel_create",
+                    "panel_delete",
+                    "panel_list",
+                    "panel_send",
+                    "config_set",
+                    "config_show",
+                    "ai_keywords",
+                    "multipanel_create",
+                    "multipanel_list",
+                    "multipanel_delete",
+                    "multipanel_send"
+                ]
             }
         }
     }

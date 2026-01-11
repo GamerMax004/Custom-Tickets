@@ -1,4 +1,5 @@
 {
+    "bot_token": "",
     "log_channel_id": 1458124219794587803,
     "staff_role_id": 1458124567104196670,
     "transcript_path": "transcripts",
@@ -71,12 +72,25 @@
                     "emoji": "👥",
                     "category_id": 1449811999499485368,
                     "staff_role_id": 1449811998475944066,
-                    "enabled": true,
-                    "description": "> Sie haben allgemeine Fragen, Probleme bei der Bewerbung oder ähnliche Anliegen? Hier sind Sie richtig! Ein Moderatoren unseres Servers wird sich so schnell wie möglich um Sie kümmern."
+                    "description": "Sie haben allgemeine Fragen, Probleme bei der Bewerbung oder ähnliche Anliegen? Hier sind Sie richtig! Ein Moderatoren unseres Servers wird sich so schnell wie möglich um Sie kümmern.",
+                    "enabled": true
+                },
+                "serverleitung": {
+                    "label": "Serverleitung",
+                    "emoji": "👤",
+                    "category_id": 1449811999725715546,
+                    "staff_role_id": 1449811998475944068,
+                    "description": "Sie möchten sich über einen unserer Moderatoren beschweren, haben Interesse an einer Partnerschaft oder ein sonstiges Anliegen, das Sie mit der Serverleitung besprechen wollen? Die Serverleitung wird sich so schnell wie möglich um Sie kümmern.",
+                    "enabled": true
                 }
             },
-            "multipanels": {},
-            "ticket_counter": 3
+            "multipanels": {
+                "kontakt": [
+                    "servermanagment",
+                    "serverleitung"
+                ]
+            },
+            "ticket_counter": 11
         },
         "1451317018601984154": {
             "log_channel_id": 0,
