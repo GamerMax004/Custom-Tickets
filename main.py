@@ -110,16 +110,16 @@ def check_permission(command_name: str):
     async def predicate(interaction: discord.Interaction):
         guild_id_str = str(interaction.guild.id)
         user_id_str = str(interaction.user.id)
-        
+
         if interaction.user.guild_permissions.administrator:
             return True
-            
+
         if guild_id_str in permissions["servers"]:
             server_perms = permissions["servers"][guild_id_str]
             user_perms = server_perms.get("users", {}).get(user_id_str, [])
             if command_name in user_perms:
                 return True
-                
+
         return False
     return app_commands.check(predicate)
 
@@ -150,10 +150,10 @@ def get_ai_response(guild_id: int, message: str):
     guild_id_str = str(guild_id)
     if guild_id_str not in ai_training["servers"]:
         return None
-    
+
     keywords = ai_training["servers"][guild_id_str].get("keywords", {})
     message_lower = message.lower()
-    
+
     for keyword_str, response in keywords.items():
         keyword_list = [k.strip().lower() for k in keyword_str.split(",")]
         if any(k in message_lower for k in keyword_list):
@@ -180,10 +180,10 @@ async def request_ai_training(channel: discord.TextChannel, reason: str, ticket_
         timestamp=datetime.now()
     )
     embed.add_field(name="Aktion erforderlich", value="Nutze die Buttons unten, um der KI beizubringen, wie sie auf ähnliche Anfragen reagieren soll.", inline=False)
-    
+
     bot_avatar = bot.user.display_avatar.url if bot.user and bot.user.display_avatar else None
     embed.set_footer(text="© Custom Tickets by Custom Discord Development", icon_url=bot_avatar)
-    
+
     training_id = f"train_{ticket_id}_{int(datetime.now().timestamp())}"
     guild_id_str = str(channel.guild.id)
 
@@ -277,7 +277,7 @@ class TicketReasonModal(ui.Modal):
             value=f"```{reason}```",
             inline=False
         )
-        
+
         bot_avatar = bot.user.display_avatar.url if bot.user and bot.user.display_avatar else None
         welcome_embed.set_footer(text="© Custom Tickets by Custom Discord Development", icon_url=bot_avatar)
         welcome_embed.timestamp = datetime.now()
@@ -358,7 +358,7 @@ class PanelCreateModal(ui.Modal):
     async def on_submit(self, interaction: discord.Interaction):
         panel_key = self.panel_id.value.lower().replace(" ", "_")
         server_config = get_server_config(self.guild_id)
-        
+
         if panel_key in server_config.get("panels", {}):
             await interaction.response.send_message(
                 f"<:4934error:1459953806870708388> Ein Panel mit der ID `{panel_key}` existiert bereits!",
@@ -406,10 +406,10 @@ class PanelCreateModal(ui.Modal):
         # Nachricht mit Button senden
         view = ui.View()
         button = ui.Button(label="Beschreibung hinzufügen", style=discord.ButtonStyle.primary, emoji="📝")
-        
+
         async def button_callback(b_interaction: discord.Interaction):
             await b_interaction.response.send_modal(PanelDescriptionModal(panel_key, self.guild_id))
-            
+
         button.callback = button_callback
         view.add_item(button)
 
@@ -508,16 +508,16 @@ class AITrainingModal(ui.Modal):
         guild_id_str = str(self.guild_id)
         keywords = self.keywords_input.value
         response = self.response_input.value
-        
+
         if guild_id_str not in ai_training["servers"]:
             ai_training["servers"][guild_id_str] = {"keywords": {}, "pending_training": {}}
-            
+
         ai_training["servers"][guild_id_str]["keywords"][keywords] = response
-        
+
         # Entferne aus Pending
         if guild_id_str in ai_training["servers"] and self.training_id in ai_training["servers"][guild_id_str].get("pending_training", {}):
             del ai_training["servers"][guild_id_str]["pending_training"][self.training_id]
-            
+
         save_ai_training(ai_training)
 
         # Update Admin Message
@@ -526,7 +526,7 @@ class AITrainingModal(ui.Modal):
         embed.title = "<:4569ok:1459953782556463250> KI-Training abgeschlossen"
         embed.add_field(name="Keywords", value=f"`{keywords}`", inline=False)
         embed.add_field(name="Antwort", value=response, inline=False)
-        
+
         await interaction.response.edit_message(embed=embed, view=None)
 
 # --- Views ---
@@ -562,12 +562,12 @@ class TicketControlView(ui.View):
         self.claimed_by = interaction.user.id
         button.disabled = True
         button.label = f"Claimed by {interaction.user.name}"
-        
+
         # Permissions anpassen
         await interaction.channel.set_permissions(interaction.user, view_channel=True, send_messages=True, manage_channels=True)
-        
+
         await interaction.response.edit_message(view=self)
-        
+
         claim_embed = discord.Embed(
             description=f"<:8649warning:1459953895689162842> **{interaction.user.mention}** hat das Ticket übernommen!",
             color=get_color(self.guild_id, "success")
@@ -611,7 +611,7 @@ class TicketControlView(ui.View):
         guild = channel.guild
         opener = guild.get_member(self.creator_id)
         opener_mention = f"<@{self.creator_id}>" if not opener else opener.mention
-        
+
         # Transkript erstellen
         messages = [message async for message in channel.history(limit=None, oldest_first=True)]
         transcript_content = f"TRANSKRIPT - TICKET {self.panel_key}-{self.ticket_number:04d}\n"
@@ -620,12 +620,12 @@ class TicketControlView(ui.View):
         transcript_content += f"Geschlossen von: {closer.name} ({closer.id})\n"
         transcript_content += f"Grund: {reason if reason else 'Kein Grund angegeben.'}\n"
         transcript_content += "="*50 + "\n\n"
-        
+
         for msg in messages:
             timestamp = msg.created_at.strftime('%Y-%m-%d %H:%M:%S')
             content = msg.content if msg.content else "[Embed/Anhang]"
             transcript_content += f"[{timestamp}] {msg.author.name}: {content}\n"
-            
+
         os.makedirs("transcripts", exist_ok=True)
         filename = f"transcripts/ticket-{self.panel_key}-{self.ticket_number}-{int(datetime.now().timestamp())}.txt"
         with open(filename, "w", encoding="utf-8") as f:
@@ -751,11 +751,11 @@ class AITrainingView(ui.View):
         self.reason = reason
         self.guild_id = guild_id
 
-    @ui.button(label="Trainieren", style=discord.ButtonStyle.primary, emoji="🤖")
+    @ui.button(label="Trainieren", style=discord.ButtonStyle.primary, emoji="🤖", custom_id="ai_train")
     async def train_button(self, interaction: discord.Interaction, button: ui.Button):
         await interaction.response.send_modal(AITrainingModal(self.training_id, self.guild_id))
 
-    @ui.button(label="Ablehnen", style=discord.ButtonStyle.danger, emoji="🗑️")
+    @ui.button(label="Ablehnen", style=discord.ButtonStyle.danger, emoji="🗑️", custom_id="ai_ignore")
     async def ignore_button(self, interaction: discord.Interaction, button: ui.Button):
         guild_id_str = str(self.guild_id)
         if guild_id_str in ai_training["servers"] and self.training_id in ai_training["servers"][guild_id_str].get("pending_training", {}):
@@ -768,7 +768,7 @@ class AITrainingView(ui.View):
         await interaction.response.edit_message(embed=embed, view=None)
 
 class TicketPanelView(ui.View):
-    """View für die Ticket-Panel Buttons."""
+    """View für die Ticket-Panel Buttons - PERSISTENT."""
 
     def __init__(self, panel_id: str, panel_data: dict, guild_id: int):
         super().__init__(timeout=None)
@@ -776,7 +776,7 @@ class TicketPanelView(ui.View):
         self.add_item(TicketButton(panel_id, panel_data, guild_id))
 
 class MultiTicketPanelView(ui.View):
-    """View für Multipanels."""
+    """View für Multipanels - PERSISTENT."""
     def __init__(self, panels_data: dict, guild_id: int):
         super().__init__(timeout=None)
         self.guild_id = guild_id
@@ -785,21 +785,39 @@ class MultiTicketPanelView(ui.View):
                 self.add_item(TicketButton(key, panel, guild_id))
 
 class TicketButton(ui.Button):
-    """Individueller Ticket-Button."""
+    """Individueller Ticket-Button - PERSISTENT."""
 
     def __init__(self, panel_key: str, panel_data: dict, guild_id: int):
         super().__init__(
             label=panel_data.get('label', panel_key),
             emoji=panel_data.get('emoji', '🎫'),
             style=discord.ButtonStyle.secondary,
-            custom_id=f"ticket_{panel_key}"
+            custom_id=f"ticket_create_{panel_key}_{guild_id}"
         )
         self.panel_key = panel_key
         self.panel_data = panel_data
         self.guild_id = guild_id
 
     async def callback(self, interaction: discord.Interaction):
-        await interaction.response.send_modal(TicketReasonModal(self.panel_key, self.panel_data, self.guild_id))
+        # Panel-Daten neu laden für den Fall, dass sie sich geändert haben
+        server_config = get_server_config(self.guild_id)
+        current_panel_data = server_config.get("panels", {}).get(self.panel_key)
+
+        if not current_panel_data:
+            await interaction.response.send_message(
+                "<:4934error:1459953806870708388> Dieses Panel wurde gelöscht oder ist nicht mehr verfügbar.",
+                ephemeral=True
+            )
+            return
+
+        if not current_panel_data.get("enabled", True):
+            await interaction.response.send_message(
+                "<:4934error:1459953806870708388> Dieses Panel ist derzeit deaktiviert.",
+                ephemeral=True
+            )
+            return
+
+        await interaction.response.send_modal(TicketReasonModal(self.panel_key, current_panel_data, self.guild_id))
 
 # --- Bot Setup ---
 
@@ -809,13 +827,38 @@ intents.members = True
 
 bot = commands.Bot(command_prefix="!", intents=intents)
 
+async def setup_persistent_views():
+    """Registriert alle persistenten Views beim Bot-Start."""
+    print("🔄 Registriere persistente Views...")
+
+    for guild_id_str, server_config in config["servers"].items():
+        guild_id = int(guild_id_str)
+
+        # Einzelne Panels registrieren
+        panels = server_config.get("panels", {})
+        for panel_id, panel_data in panels.items():
+            if panel_data.get("enabled", True):
+                view = TicketPanelView(panel_id, panel_data, guild_id)
+                bot.add_view(view)
+
+        # Multipanels registrieren
+        multipanels = server_config.get("multipanels", {})
+        for mp_id, panel_ids in multipanels.items():
+            active_panels = {pid: panels[pid] for pid in panel_ids if pid in panels and panels[pid].get("enabled", True)}
+            if active_panels:
+                view = MultiTicketPanelView(active_panels, guild_id)
+                bot.add_view(view)
+
+    # Ticket Control Views registrieren (für offene Tickets)
+    print("✅ Persistente Views registriert!")
+
 @bot.tree.command(name="ticket_setup", description="🚀 Sendet das Ticket-Panel")
 @check_permission("ticket_setup")
 async def ticket_setup(interaction: discord.Interaction):
     """Sendet das Ticket-Panel."""
     server_config = get_server_config(interaction.guild.id)
     panels = server_config.get("panels", {})
-    
+
     if not panels:
         await interaction.response.send_message("<:4934error:1459953806870708388> Keine Panels konfiguriert! Nutze `/panel_create`.", ephemeral=True)
         return
@@ -825,10 +868,10 @@ async def ticket_setup(interaction: discord.Interaction):
         description="Wähle eine Kategorie aus, um ein Ticket zu erstellen.",
         color=get_color(interaction.guild.id, "default")
     )
-    
+
     bot_avatar = bot.user.display_avatar.url if bot.user and bot.user.display_avatar else None
     embed.set_footer(text="© Custom Tickets by Custom Discord Development", icon_url=bot_avatar)
-    
+
     # Multipanel View verwenden um alle Panels zu zeigen
     view = MultiTicketPanelView(panels, interaction.guild.id)
     await interaction.channel.send(embed=embed, view=view)
@@ -859,13 +902,13 @@ async def panel_list(interaction: discord.Interaction):
     """Listet Panels auf."""
     server_config = get_server_config(interaction.guild.id)
     panels = server_config.get("panels", {})
-    
+
     if not panels:
         await interaction.response.send_message("<:4934error:1459953806870708388> Keine Panels konfiguriert.", ephemeral=True)
         return
 
     list_embed = discord.Embed(title="📋 Konfigurierte Panels", color=get_color(interaction.guild.id, "info"))
-    
+
     for key, panel in panels.items():
         status = "<:4569ok:1459953782556463250> Aktiv" if panel.get("enabled", True) else "<:4934error:1459953806870708388> Deaktiviert"
         value = f"**Label:** {panel.get('label', key)}\n"
@@ -926,18 +969,18 @@ async def config_show(interaction: discord.Interaction):
         color=get_color(interaction.guild.id, "info"),
         timestamp=datetime.now()
     )
-    
+
     # Basis-Informationen
     log_channel = interaction.guild.get_channel(server_config.get("log_channel_id", 0))
     staff_role = interaction.guild.get_role(server_config.get("staff_role_id", 0))
     ai_channel = interaction.guild.get_channel(server_config.get("ai_training_channel_id", 0))
-    
+
     log_mention = log_channel.mention if log_channel else "<:4934error:1459953806870708388> Nicht gesetzt"
     staff_mention = staff_role.mention if staff_role else "<:4934error:1459953806870708388> Nicht gesetzt"
     ai_mention = ai_channel.mention if ai_channel else "<:4934error:1459953806870708388> Nicht gesetzt"
-    
+
     embed.add_field(name="Allgemein", value=f"**Log-Kanal:** {log_mention}\n**Staff-Rolle:** {staff_mention}\n**KI-Training:** {ai_mention}\n**Tickets gesamt:** `{server_config.get('ticket_counter', 0)}`", inline=False)
-    
+
     # Panels
     panels = server_config.get("panels", {})
     if panels:
@@ -946,7 +989,7 @@ async def config_show(interaction: discord.Interaction):
             status = "<:4569ok:1459953782556463250>" if p_data.get("enabled", True) else "<:4934error:1459953806870708388>"
             panel_list.append(f"{status} `{p_id}`: {p_data['label']} ({p_data.get('emoji', '🎫')})")
         embed.add_field(name="Panels", value="\n".join(panel_list), inline=True)
-    
+
     # Multipanels
     multipanels = server_config.get("multipanels", {})
     if multipanels:
@@ -958,13 +1001,13 @@ async def config_show(interaction: discord.Interaction):
     if colors:
         color_info = "\n".join([f"**{name}:** `{hex(val)}`" for name, val in colors.items()])
         embed.add_field(name="Farben", value=color_info, inline=False)
-        
+
     # Nützliche Infos
     embed.add_field(name="Nützliche Befehle", value="`/config_set` - Einstellungen ändern\n`/panel_create` - Neues Panel\n`/multipanel_create` - Multipanel\n`/multipanel_list` - Multipanels anzeigen\n`/multipanel_delete` - Multipanel löschen\n`/permission_grant` - Rechte vergeben", inline=False)
-    
+
     bot_avatar = bot.user.display_avatar.url if bot.user and bot.user.display_avatar else None
     embed.set_footer(text="© Custom Tickets by Custom Discord Development", icon_url=bot_avatar)
-    
+
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 @bot.tree.command(name="panel_send", description="📤 Sendet ein einzelnes Ticket-Panel")
@@ -974,11 +1017,11 @@ async def panel_send(interaction: discord.Interaction, panel_id: str):
     """Sendet ein einzelnes Ticket-Panel."""
     server_config = get_server_config(interaction.guild.id)
     panels = server_config.get("panels", {})
-    
+
     if panel_id not in panels:
         await interaction.response.send_message(f"<:4934error:1459953806870708388> Panel `{panel_id}` wurde nicht gefunden!", ephemeral=True)
         return
-        
+
     panel_data = panels[panel_id]
     if not panel_data.get("enabled", True):
         await interaction.response.send_message(f"<:4934error:1459953806870708388> Panel `{panel_id}` ist deaktiviert!", ephemeral=True)
@@ -989,10 +1032,10 @@ async def panel_send(interaction: discord.Interaction, panel_id: str):
         description=panel_data.get('description', 'Klicke auf den Button unten, um ein Ticket zu erstellen.'),
         color=get_color(interaction.guild.id, "default")
     )
-    
+
     bot_avatar = bot.user.display_avatar.url if bot.user and bot.user.display_avatar else None
     embed.set_footer(text="© Custom Tickets by Custom Discord Development", icon_url=bot_avatar)
-    
+
     view = TicketPanelView(panel_id, panel_data, interaction.guild.id)
     await interaction.channel.send(embed=embed, view=view)
     await interaction.response.send_message(f"<:4569ok:1459953782556463250> Panel `{panel_id}` wurde gesendet.", ephemeral=True)
@@ -1006,9 +1049,6 @@ class MultipanelSelect(ui.Select):
         super().__init__(placeholder="Wähle die Panels für das Multipanel aus...", min_values=1, max_values=len(options), options=options)
 
     async def callback(self, interaction: discord.Interaction):
-        # We don't defer here because we'll handle it in the command if needed, 
-        # or we use the interaction directly.
-        # However, to avoid "interaction already responded", we should be careful.
         self.view.selected_panels = self.values
         await interaction.response.send_message(f"<:4569ok:1459953782556463250> {len(self.values)} Panels ausgewählt.", ephemeral=True)
         self.view.stop()
@@ -1026,7 +1066,7 @@ async def multipanel_create(interaction: discord.Interaction, multipanel_id: str
     """Erstellt ein Multipanel via Auswahl-Menü."""
     server_config = get_server_config(interaction.guild.id)
     panels = server_config.get("panels", {})
-    
+
     if not panels:
         await interaction.response.send_message("<:4934error:1459953806870708388> Keine Panels vorhanden. Erstelle erst Panels mit `/panel_create`.", ephemeral=True)
         return
@@ -1038,17 +1078,17 @@ async def multipanel_create(interaction: discord.Interaction, multipanel_id: str
 
     view = MultipanelCreateView(panels)
     await interaction.response.send_message("Bitte wähle die Panels aus, die in diesem Multipanel enthalten sein sollen:", view=view, ephemeral=True)
-    
+
     await view.wait()
     if not view.selected_panels:
         return
 
     if "multipanels" not in server_config:
         server_config["multipanels"] = {}
-        
+
     server_config["multipanels"][multipanel_id] = view.selected_panels
     save_config(config)
-    
+
     try:
         await interaction.followup.send(f"<:4569ok:1459953782556463250> Multipanel `{multipanel_id}` mit {len(view.selected_panels)} Panels erstellt!", ephemeral=True)
     except Exception as e:
@@ -1073,7 +1113,7 @@ async def multipanel_list(interaction: discord.Interaction):
     """Listet Multipanels auf."""
     server_config = get_server_config(interaction.guild.id)
     multipanels = server_config.get("multipanels", {})
-    
+
     if not multipanels:
         await interaction.response.send_message("<:4934error:1459953806870708388> Keine Multipanels konfiguriert.", ephemeral=True)
         return
@@ -1081,7 +1121,7 @@ async def multipanel_list(interaction: discord.Interaction):
     embed = discord.Embed(title="📚 Konfigurierte Multipanels", color=get_color(interaction.guild.id, "info"))
     for mp_id, p_ids in multipanels.items():
         embed.add_field(name=f"🆔 {mp_id}", value=f"Panels: {', '.join([f'`{pid}`' for pid in p_ids])}", inline=False)
-        
+
     await interaction.response.send_message(embed=embed, ephemeral=True)
 
 @bot.tree.command(name="multipanel_send", description="📤 Sendet ein Multipanel")
@@ -1091,16 +1131,16 @@ async def multipanel_send(interaction: discord.Interaction, multipanel_id: str):
     """Sendet ein Multipanel."""
     server_config = get_server_config(interaction.guild.id)
     multipanels = server_config.get("multipanels", {})
-    
+
     if multipanel_id not in multipanels:
         await interaction.response.send_message(f"<:4934error:1459953806870708388> Multipanel `{multipanel_id}` nicht gefunden!", ephemeral=True)
         return
-        
+
     p_ids = multipanels[multipanel_id]
     panels = server_config.get("panels", {})
-    
+
     active_panels = {pid: panels[pid] for pid in p_ids if pid in panels and panels[pid].get("enabled", True)}
-    
+
     if not active_panels:
         await interaction.response.send_message("<:4934error:1459953806870708388> Keine aktiven Panels in diesem Multipanel gefunden.", ephemeral=True)
         return
@@ -1109,7 +1149,7 @@ async def multipanel_send(interaction: discord.Interaction, multipanel_id: str):
     desc_parts = []
     for pid, p_data in active_panels.items():
         desc_parts.append(f"**{p_data.get('emoji', '🎫')} {p_data['label']}**\n{p_data.get('description', 'Keine Beschreibung.')}")
-    
+
     description = "\n\n".join(desc_parts)
 
     embed = discord.Embed(
@@ -1119,7 +1159,7 @@ async def multipanel_send(interaction: discord.Interaction, multipanel_id: str):
     )
     bot_avatar = bot.user.display_avatar.url if bot.user and bot.user.display_avatar else None
     embed.set_footer(text="© Custom Tickets by Custom Discord Development", icon_url=bot_avatar)
-    
+
     view = MultiTicketPanelView(active_panels, interaction.guild.id)
     await interaction.channel.send(embed=embed, view=view)
     await interaction.response.send_message(f"<:4569ok:1459953782556463250> Multipanel `{multipanel_id}` gesendet.", ephemeral=True)
@@ -1132,24 +1172,21 @@ async def add(interaction: discord.Interaction, user: discord.Member):
         await interaction.response.send_message("<:4934error:1459953806870708388> Dieser Befehl kann nur in Ticket-Kanälen verwendet werden.", ephemeral=True)
         return
 
-    # Berechtigungen prüfen (nur Staff oder Ersteller darf Leute hinzufügen)
-    # Hier vereinfacht: Jedes Teammitglied kann Leute hinzufügen
-    # Wir suchen die staff_role_id aus dem Topic oder der Config
     server_config = get_server_config(interaction.guild.id)
     staff_role_id = server_config.get("staff_role_id", 0)
-    
+
     if not is_staff(interaction.user, staff_role_id):
         await interaction.response.send_message("<:4934error:1459953806870708388> Keine Berechtigung!", ephemeral=True)
         return
 
     await interaction.channel.set_permissions(user, view_channel=True, send_messages=True, attach_files=True, embed_links=True)
-    
+
     embed = discord.Embed(
         description=f"<:8649warning:1459953895689162842> {user.mention} wurde zum Ticket hinzugefügt.",
         color=get_color(interaction.guild.id, "success")
     )
     await interaction.response.send_message(embed=embed)
-    
+
     await log_action(
         interaction.guild,
         f"**User zum Ticket hinzugefügt**\n"
@@ -1169,19 +1206,19 @@ async def remove(interaction: discord.Interaction, user: discord.Member):
 
     server_config = get_server_config(interaction.guild.id)
     staff_role_id = server_config.get("staff_role_id", 0)
-    
+
     if not is_staff(interaction.user, staff_role_id):
         await interaction.response.send_message("<:4934error:1459953806870708388> Keine Berechtigung!", ephemeral=True)
         return
 
     await interaction.channel.set_permissions(user, overwrite=None)
-    
+
     embed = discord.Embed(
         description=f"<:8649warning:1459953895689162842> {user.mention} wurde vom Ticket entfernt.",
         color=get_color(interaction.guild.id, "error")
     )
     await interaction.response.send_message(embed=embed)
-    
+
     await log_action(
         interaction.guild,
         f"**User vom Ticket entfernt**\n"
@@ -1198,20 +1235,20 @@ async def permission_grant(interaction: discord.Interaction, user: discord.Membe
     """Gibt einem User Berechtigungen."""
     guild_id_str = str(interaction.guild.id)
     user_id_str = str(user.id)
-    
+
     if guild_id_str not in permissions["servers"]:
         permissions["servers"][guild_id_str] = {"users": {}}
-    
+
     if user_id_str not in permissions["servers"][guild_id_str]["users"]:
         permissions["servers"][guild_id_str]["users"][user_id_str] = []
-        
+
     if command == "all":
         permissions["servers"][guild_id_str]["users"][user_id_str] = [
             "ticket_setup", "panel_create", "panel_delete", "panel_list", "panel_send", "config_set", "config_show", "ai_keywords", "multipanel_create", "multipanel_list", "multipanel_delete", "multipanel_send"
         ]
     elif command not in permissions["servers"][guild_id_str]["users"][user_id_str]:
         permissions["servers"][guild_id_str]["users"][user_id_str].append(command)
-        
+
     save_permissions(permissions)
     await interaction.response.send_message(f"<:4569ok:1459953782556463250> Berechtigung `{command}` für {user.mention} hinzugefügt!", ephemeral=True)
 
@@ -1222,13 +1259,13 @@ async def permission_revoke(interaction: discord.Interaction, user: discord.Memb
     """Entfernt Berechtigungen."""
     guild_id_str = str(interaction.guild.id)
     user_id_str = str(user.id)
-    
+
     if guild_id_str in permissions["servers"] and user_id_str in permissions["servers"][guild_id_str]["users"]:
         if command == "all":
             permissions["servers"][guild_id_str]["users"][user_id_str] = []
         elif command in permissions["servers"][guild_id_str]["users"][user_id_str]:
             permissions["servers"][guild_id_str]["users"][user_id_str].remove(command)
-            
+
         save_permissions(permissions)
         await interaction.response.send_message(f"<:4569ok:1459953782556463250> Berechtigung `{command}` für {user.mention} entfernt!", ephemeral=True)
     else:
@@ -1261,10 +1298,15 @@ async def on_ready():
     print(f"✅ Bot ist online: {bot.user.name}")
     print(f"📊 Discord.py Version: {discord.__version__}")
     print(f"🔗 Verbunden mit {len(bot.guilds)} Server(n)")
-    
+
     for guild in bot.guilds:
         get_server_config(guild.id)
         print(f"   ├─ {guild.name} (ID: {guild.id})")
+
+    print("═" * 50)
+
+    # Persistente Views registrieren
+    await setup_persistent_views()
 
     print("═" * 50)
     try:
