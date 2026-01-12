@@ -751,11 +751,11 @@ class AITrainingView(ui.View):
         self.reason = reason
         self.guild_id = guild_id
 
-    @ui.button(label="Trainieren", style=discord.ButtonStyle.primary, emoji="🤖", custom_id="ai_train")
+    @ui.button(label="Trainieren", style=discord.ButtonStyle.primary, custom_id="ai_train")
     async def train_button(self, interaction: discord.Interaction, button: ui.Button):
         await interaction.response.send_modal(AITrainingModal(self.training_id, self.guild_id))
 
-    @ui.button(label="Ablehnen", style=discord.ButtonStyle.danger, emoji="🗑️", custom_id="ai_ignore")
+    @ui.button(label="Ablehnen", style=discord.ButtonStyle.danger, custom_id="ai_ignore")
     async def ignore_button(self, interaction: discord.Interaction, button: ui.Button):
         guild_id_str = str(self.guild_id)
         if guild_id_str in ai_training["servers"] and self.training_id in ai_training["servers"][guild_id_str].get("pending_training", {}):
